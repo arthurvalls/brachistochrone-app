@@ -47,6 +47,7 @@ def linear(x2, y2, N=100):
     return x, y, T
 
 app = dash.Dash()
+server = app.server
 
 # Calculate the cycloid curve
 x_cycloid, y_cycloid, T_cycloid = cycloid(1, 1)
