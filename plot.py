@@ -5,6 +5,18 @@ import plotly.graph_objs as go
 import numpy as np
 from scipy.optimize import newton
 
+
+external_stylesheets = [
+    {
+        "href": "https://fonts.googleapis.com/css2?"
+                "family=Poppins:wght@300;700&display=swap",
+        "rel": "stylesheet",
+    },
+]
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.title = "Brachistochrone"
+
 # Acceleration due to gravity (m.s-2); final position of bead (m).
 g = 9.81
 x2, y2 = 1, 0.65
@@ -46,8 +58,6 @@ def linear(x2, y2, N=100):
     print('T(linear) = {:.3f}'.format(T))
     return x, y, T
 
-app = dash.Dash()
-server = app.server
 
 # Calculate the cycloid curve
 x_cycloid, y_cycloid, T_cycloid = cycloid(1, 1)
@@ -62,26 +72,34 @@ cycloid_plot = go.Scatter(x=x_cycloid, y=y_cycloid, mode='lines', name='Cycloid'
 line_plot = go.Scatter(x=x_line, y=y_line, mode='lines', name='Linear')
 
 app.layout = html.Div([
+    html.Div([html.P("Baristocrona Simulator")], className="header"),
     html.Div([
         html.Label('x2'),
         dcc.Input(id='input-x2', type='number', value=1, min=0.1)
-    ]),
+    ],className='x2'),
     html.Div([
         html.Label('y2'),
         dcc.Input(id='input-y2', type='number', value=1, min=0.1)
-    ]),
-    dcc.Graph(
-        id='cycloid-plot',
-        figure={
-            'data': [cycloid_plot, line_plot],
-            'layout': {
-                'yaxis': {
-                    'autorange': 'reversed'
+    ], className='y2'),
+        html.Div([
+        dcc.Graph(
+            id='cycloid-plot',
+            figure={
+                'data': [cycloid_plot, line_plot],
+                'layout': {
+                    'yaxis': {
+                        'autorange': 'reversed'
+                    }
                 }
             }
-        }
-    )
+        )
+    ], className='cycloid-plot'),
+    html.Div([
+        html.P("Denomina-se braquistócrona a trajectória de uma partícula que, sujeita a um campo gravitacional constante, sem atrito e com velocidade inicial nula, se desloca entre dois pontos no menor intervalo de tempo que os une, mas sim, qual trajectória é percorrida no menor tempo."),
+         ], className = "paragraph"),
 ])
+
+
 
 
 @app.callback(
