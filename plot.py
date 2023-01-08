@@ -72,13 +72,13 @@ cycloid_plot = go.Scatter(x=x_cycloid, y=y_cycloid, mode='lines', name='Cycloid'
 line_plot = go.Scatter(x=x_line, y=y_line, mode='lines', name='Linear')
 
 app.layout = html.Div([
-    html.Div([html.P("Baristocrona Simulator")], className="header"),
+    html.Div([html.P("Braquistócrona Simulator")], className="header"),
     html.Div([
-        html.Label('x2'),
+        html.Label('x final: '),
         dcc.Input(id='input-x2', type='number', value=1, min=0.1)
     ],className='x2'),
     html.Div([
-        html.Label('y2'),
+        html.Label('y final: '),
         dcc.Input(id='input-y2', type='number', value=1, min=0.1)
     ], className='y2'),
         html.Div([
