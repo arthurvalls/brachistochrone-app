@@ -89,11 +89,11 @@ line_plot = go.Scatter(x=x_line, y=y_line, mode='lines', name='Linear')
 app.layout = html.Div([
     html.Div([html.P("Braquistócrona Simulator")], className="header"),
     html.Div([
-        html.Label('x final'),
+        html.Label('x final: '),
         dcc.Input(id='input-final_x', type='number', value=1, min=0.1)
     ],className='x2'),
     html.Div([
-        html.Label('y final'),
+        html.Label('y final: '),
         dcc.Input(id='input-final_y', type='number', value=1, min=0.1)
     ], className='y2'),
         html.Div([
