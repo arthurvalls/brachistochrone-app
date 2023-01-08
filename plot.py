@@ -19,48 +19,63 @@ app.title = "Brachistochrone"
 
 # Acceleration due to gravity (m.s-2); final position of bead (m).
 g = 9.81
-x2, y2 = 1, 0.65
 
-def cycloid(x2, y2, N=100):
-    """Return the path of Brachistochrone curve from (0,0) to (x2, y2).
 
-    The Brachistochrone curve is the path down which a bead will fall without
-    friction between two points in the least time (an arc of a cycloid).
-    It is returned as an array of N values of (x,y) between (0,0) and (x2,y2).
+def braquistocrona(final_x, final_y, N=100):
+    """Retorna o caminho da curva braquistocrona de (0,0) até (final_x, final_y).
+
+    A curva braquistocrona é o caminho pelo qual uma partícula cairá sem atrito entre dois pontos no menor tempo (um arco de uma cicloide).
+    É retornado como uma matriz de N valores de (x,y) entre (0,0) e (final_x,final_y).
 
     """
-
-    # First find theta2 from (x2, y2) numerically (by Newton-Rapheson).
+    # Encontra o parametro (final_theta) formado pelo eixo x e a tangente da curva no ponto final (final_x, final_y) numericamente usando o método de Newton-Rapheson
     def f(theta):
-        return y2/x2 - (1-np.cos(theta))/(theta-np.sin(theta))
-    theta2 = newton(f, np.pi/2)
+        return final_y/final_x - (1-np.cos(theta))/(theta-np.sin(theta))
+    final_theta = newton(f, np.pi/2)
 
-    # The radius of the circle generating the cycloid.
-    R = y2 / (1 - np.cos(theta2))
+    # Calcula o raio do círculo que gera a cicloide com base em final_theta
+    R = final_y / (1 - np.cos(final_theta))
 
-    theta = np.linspace(0, theta2, N)
+    # Gera N pontos da curva igualmente espaçando final_theta em N intervalos
+    theta = np.linspace(0, final_theta, N)
+
+    # Calcula os pontos 
     x = R * (theta - np.sin(theta))
     y = R * (1 - np.cos(theta))
 
-    # The time of travel
-    T = theta2 * np.sqrt(R / g)
+
+    # Calcula o tempo de viagem ao longo da curva
+    if final_theta == np.pi:
+        T = np.pi * np.sqrt(R / g)
+    else:
+        T = final_theta * np.sqrt(R / g)
+    #print('T(braquistocrona) = {:.3f}'.format(T))
     return x, y, T
 
-def linear(x2, y2, N=100):
-    """Return the path of a straight line from (0,0) to (x2, y2)."""
-
-    m = y2 / x2
-    x = np.linspace(0, x2, N)
+def linear(final_x, final_y, N=100):
+    """Retorna o caminho de uma reta de (0,0) para (final_x, final_y)."""
+    
+    # Calcula a inclinação da reta
+    m = final_y / final_x
+    
+    # Cria um array de valores uniformemente espaçados de 0 a final_x
+    x = np.linspace(0, final_x, N)
+    
+    # Calcula os valores y correspondentes da reta
     y = m*x
-
-    # The time of travel
-    T = np.sqrt(2*(1+m**2)/g/m * x2)
+    
+    # Calcula o tempo de viagem na reta 
+    T = np.sqrt(2*(1+m**2)/g/m * final_x)
+    
+    # Saída do tempo de viagem com três casas decimais
     print('T(linear) = {:.3f}'.format(T))
+    
+    # Retorna os valores de x, y e T
     return x, y, T
 
 
 # Calculate the cycloid curve
-x_cycloid, y_cycloid, T_cycloid = cycloid(1, 1)
+x_cycloid, y_cycloid, T_cycloid = braquistocrona(1, 1)
 
 # Calculate the straight line
 x_line, y_line, T_line = linear(1, 1)
@@ -74,12 +89,12 @@ line_plot = go.Scatter(x=x_line, y=y_line, mode='lines', name='Linear')
 app.layout = html.Div([
     html.Div([html.P("Braquistócrona Simulator")], className="header"),
     html.Div([
-        html.Label('x final: '),
-        dcc.Input(id='input-x2', type='number', value=1, min=0.1)
+        html.Label('x final'),
+        dcc.Input(id='input-final_x', type='number', value=1, min=0.1)
     ],className='x2'),
     html.Div([
-        html.Label('y final: '),
-        dcc.Input(id='input-y2', type='number', value=1, min=0.1)
+        html.Label('y final'),
+        dcc.Input(id='input-final_y', type='number', value=1, min=0.1)
     ], className='y2'),
         html.Div([
         dcc.Graph(
@@ -95,25 +110,28 @@ app.layout = html.Div([
         )
     ], className='cycloid-plot'),
     html.Div([
-        html.P("Denomina-se braquistócrona a trajectória de uma partícula que, sujeita a um campo gravitacional constante, sem atrito e com velocidade inicial nula, se desloca entre dois pontos no menor intervalo de tempo que os une, mas sim, qual trajectória é percorrida no menor tempo."),
+        html.P("O problema da braquistócrona é um dos problemas mais notórios das ciências físicas e matemáticas, foi proposto por Johann Bernoulli em 1696 como um desafio aos grandes matemáticos da época, e consiste em achar a curva ao longo do qual uma partícula sob ação da gravidade desliza sem atrito no menor tempo de um dado ponto P a outro Q, assumindo que P está acima de Q."),
          ], className = "paragraph"),
-])
+        html.Div([
+        html.P("O simulador acima toma como input as coordenadas do ponto final onde a partícula parará, e retorna a curva linear e da cicloide (braquistocrona) que a partícula descreverá, além do tempo de viagem em ambas as curvas sobre a ação da gravidade, sem atrito e sem resistência do ar.")
+], className = "paragraph"),
+       ])
 
 
 
 
 @app.callback(
     dash.dependencies.Output('cycloid-plot', 'figure'),
-    [dash.dependencies.Input('input-x2', 'value'),
-     dash.dependencies.Input('input-y2', 'value')],
+    [dash.dependencies.Input('input-final_x', 'value'),
+     dash.dependencies.Input('input-final_y', 'value')],
      
 )
-def update_plot(x2, y2):
+def update_plot(final_x, final_y):
     # Calculate the cycloid curve
-    x_cycloid, y_cycloid, T_cycloid = cycloid(x2, y2)
+    x_cycloid, y_cycloid, T_cycloid = braquistocrona(final_x, final_y)
 
     # Calculate the straight line
-    x_line, y_line, T_line = linear(x2, y2)
+    x_line, y_line, T_line = linear(final_x, final_y)
 
     # Create a new Plotly scatter plot with lines connecting the points for the cycloid
     cycloid_plot = go.Scatter(x=x_cycloid, y=y_cycloid, mode='lines', name='Braquistocrona')
