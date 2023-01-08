@@ -17,7 +17,7 @@ external_stylesheets = [
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = "Brachistochrone"
 
-# Acceleration due to gravity (m.s-2); final position of bead (m).
+# Aceleração da gravidade (m.s-2)
 g = 9.81
 
 
@@ -74,16 +74,16 @@ def linear(final_x, final_y, N=100):
     return x, y, T
 
 
-# Calculate the cycloid curve
+# Calcula a curva da cicloide
 x_cycloid, y_cycloid, T_cycloid = braquistocrona(1, 1)
 
-# Calculate the straight line
+# Calcula a reta 
 x_line, y_line, T_line = linear(1, 1)
 
-# Create a Plotly scatter plot for the cycloid
+# Cria um gráfico de linha para a cicloide com o Plotly
 cycloid_plot = go.Scatter(x=x_cycloid, y=y_cycloid, mode='lines', name='Cycloid')
 
-# Create a Plotly scatter plot for the straight line
+# Cria um gráfico de linha para a reta com o Plotly
 line_plot = go.Scatter(x=x_line, y=y_line, mode='lines', name='Linear')
 
 app.layout = html.Div([
@@ -127,25 +127,21 @@ app.layout = html.Div([
      
 )
 def update_plot(final_x, final_y):
-    # Calculate the cycloid curve
+    # Calcula a curva da cicloide
     x_cycloid, y_cycloid, T_cycloid = braquistocrona(final_x, final_y)
 
-    # Calculate the straight line
+    # Calcula a curva da reta
     x_line, y_line, T_line = linear(final_x, final_y)
 
-    # Create a new Plotly scatter plot with lines connecting the points for the cycloid
+    # Cria um novo plot de acordo com o input do usuário
     cycloid_plot = go.Scatter(x=x_cycloid, y=y_cycloid, mode='lines', name='Braquistocrona')
-
-    # Create a new Plotly scatter plot with lines connecting the points for the straight line
     line_plot = go.Scatter(x=x_line, y=y_line, mode='lines', name='Linear')
 
-    # Add an annotation showing the time of travel for the cycloid
+    # Adiciona uma anotação que indica o tempo de viagem para a Cicloide e a Reta
     cycloid_annotation = go.layout.Annotation(text=f'Tempo de Viagem (Braquistocrona): {T_cycloid:.4f}s', x=0.5, y=0.9, xref='paper', yref='paper', showarrow=False, font=dict(size=18), align='center')
-
-    # Add an annotation showing the time of travel for the straight line
     line_annotation = go.layout.Annotation(text=f'Tempo de Viagem (Linear): {T_line:.4f}s', x=0.5, y=0.8, xref='paper', yref='paper', showarrow=False, font=dict(size=18), align='center')
 
-    # Update the figure with the new plots and annotations
+    # Atualiza o plot com os novos gráficos e anotações
     figure = {
         'data': [cycloid_plot, line_plot],
         'layout': {
@@ -159,6 +155,6 @@ def update_plot(final_x, final_y):
     return figure
 
 
-
+# Inicializa o app
 if __name__ == '__main__':
     app.run_server()
