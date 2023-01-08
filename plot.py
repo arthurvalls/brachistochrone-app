@@ -50,7 +50,6 @@ def braquistocrona(final_x, final_y, N=100):
     else:
         T = final_theta * np.sqrt(R / g)
     
-    
     return x, y, T
 
 def linear(final_x, final_y, N=100):
@@ -116,6 +115,9 @@ app.layout = html.Div([
         html.Div([
         html.P("O simulador acima toma como input as coordenadas do ponto final onde a partícula parará, e retorna a curva linear e da cicloide (braquistocrona) que a partícula descreverá, além do tempo de viagem em ambas as curvas sob a ação da gravidade, sem atrito e sem resistência do ar.")
 ], className = "paragraph"),
+html.Div([
+        html.P("Alunos: Arthur Valls, Bernardo Nunes, João Vitor Alvarenga e Julia Turazzi")
+], className = "footer"),
        ])
 
 
